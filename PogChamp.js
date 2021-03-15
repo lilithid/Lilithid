@@ -1,13 +1,12 @@
 const Discord = require('discord.js');
 const drip = new Discord.Client({ fetchAllMembers: true, sync: true, partials: ['USER', 'GUILD_MEMBER', 'CHANNEL', 'MESSAGE', 'REACTION'] });
-const cfg = require('./poggu');
-drip.login(cfg.token);
+const cfg = require('./poggu.json');
 
 const fs = require('fs');
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0;
 
 const pfx = '*';
-const cmdfs = fs.readdirSync('./cmds').filter(file => file.endsWith('.js'));
+const cmdfs = fs.readdirSync('./cmds/').filter(file => file.endsWith('.js'));
 drip.commands = new Discord.Collection();
 
 for (const file of cmdfs){
@@ -16,7 +15,8 @@ for (const file of cmdfs){
 }
 
 drip.on('ready', async () => {
-	console.log('up');
+	console.log('\nLilith is online.');
+	drip.user.setActivity(`Lilith - Prefix: *`, { type: ``});
 })
 
 drip.on('message', async data => {
@@ -34,3 +34,5 @@ drip.on('message', async data => {
 		data.reply(`An internal error occurred while attempting to perform this command.`);
 	}
 })
+
+drip.login(cfg.token);

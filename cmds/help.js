@@ -2,11 +2,11 @@ const Discord = require('discord.js');
 const drip = new Discord.Client({ partials: ['USER', 'GUILD_MEMBER', 'CHANNEL', 'MESSAGE', 'REACTION'] });
 const fs = require('fs');
 
-const cmdfs = fs.readdirSync('./cmds').filter(file => file.endsWith('.js'));
+const cmdfs = fs.readdirSync('./cmds/').filter(file => file.endsWith('.js'));
 drip.commands = new Discord.Collection();
 
 for (const file of cmdfs){
-	const cmd = require(`./cmds/${file}`);
+	const cmd = require(`./${file}`);
 	drip.commands.set(cmd.name, cmd);
 }
 
