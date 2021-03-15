@@ -27,7 +27,7 @@ module.exports = {
 			if (drip.commands.has(args[0].toLowerCase())){
 				await data.channel.send({ embed: {
 					"title": `${drip.commands.get(args[0].toLowerCase()).name}`,
-					"description": `Description: ${drip.commands.get(args[0].toLowerCase()).description}\nUsage: -${drip.commands.get(args[0].toLowerCase()).name} ${drip.commands.get(args[0].toLowerCase()).optionals}`,
+					"description": `Description: ${drip.commands.get(args[0].toLowerCase()).description}\nUsage: *${drip.commands.get(args[0].toLowerCase()).name} ${drip.commands.get(args[0].toLowerCase()).optionals}`,
 					"color": 16748766
 				}});
 			} else {

@@ -6,7 +6,7 @@ drip.login(cfg.token);
 const fs = require('fs');
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0;
 
-const pfx = '-';
+const pfx = '*';
 const cmdfs = fs.readdirSync('./cmds').filter(file => file.endsWith('.js'));
 drip.commands = new Discord.Collection();
 
