@@ -2,12 +2,7 @@ const mysql = require('mysql');
 const cli = require('./main.js');
 const SqlString = require('sqlstring');
 
-const db_config = {
-	host: 'localhost',
-	user: 'root',
-	password: 'S6ffe9++',
-	database:'fungal'
-};
+const db_config = require('./dbconfig.js')
 
 var db;
 
