@@ -11,7 +11,7 @@ async function help(cli, cfg, data){
 		}, {
 			"name": "**__Moderation:__**", "value": "```fix\nfind; commend; expelled; characterlist; nonames; purge; changelogs; feedbackblacklist; history; warn; fixname; ban; kick; mute; pmute; unmute; suspend; psuspend; unsuspend; vetmanualverify; manualverify; unverify; addalt```"
 		}, {
-			"name": "**__Server Management:__**", "value": "```fix\nping; dominate; resetweek; restart```"
+			"name": "**__Server Management:__**", "value": "```fix\nping; --resetweek--; restart```"
 		}, {
 			"name": "**__Raiders Commands:__**", "value": "```fix\njoin; avatar; roat; koat; loat; stats```\nTo learn more about a command, use the command -cmds <command name>"
 		} ]
@@ -71,7 +71,7 @@ async function help(cli, cfg, data){
 				return data.channel.send(`**\*unsuspend (none) [IGN/@user] [time reason]** : *Unsuspends a single user.*`);
 				break;
 			case 'headcount': case 'hc':
-				return data.channel.send(`**\*headcount (\*hc) [type]** : *Puts up a headcount in the raid status announcement.*`);
+				return data.channel.send(`**\*headcount (\*hc)** : *Puts up a headcount in the raid status announcement.*`);
 				break;
 			case 'log':
 				return data.channel.send(`**\*log (none) [s/success/f/fail] (amount) (@assisted1 @assisted2 @assisted3)** : *Logs a run you did as failed or successful in your stats.*`);
@@ -110,7 +110,7 @@ async function help(cli, cfg, data){
 				return data.channel.send(`**\*avatar (none) (@user/id)** : *Shows a link for someone's avatar or yours.*`);
 				break;
 			case 'afk':
-				return data.channel.send(`**\*afk (none) [type (fc)] [location]** : *Creates an afk check in the raid status announcement.*`);
+				return data.channel.send(`**\*afk (none) [location]** : *Creates an afk check in the raid status announcement.*`);
 				break;
 			case 'roat':
 				return data.channel.send(`**\*roat (none)** : *Shows the leaderboard: raiders of all time.*`);
