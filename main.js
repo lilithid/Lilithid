@@ -56,7 +56,7 @@ cli.on('ready', async () => {
 	//cli.channels.cache.get('656915788980158484').send({ embed: vetVeriEmbed }).then((msg) => { msg.react('✅'); msg.react('❌'); });
 	//cli.channels.cache.get('635531240434565160').send({ embed: modmailPost });
 
-	const veriMsg = await cli.channels.cache.find(chan => chan.id == cfg.fungalcavern.verichannel).messages.fetch('731327827579895842'); // veri msg
+	/*const veriMsg = await cli.channels.cache.find(chan => chan.id == cfg.fungalcavern.verichannel).messages.fetch('731327827579895842'); // veri msg
 
 	const veriCollector = veriMsg.createReactionCollector((reaction, user) => {return !user.bot}, { time: 0 });
 	veriCollector.on('collect', async (reaction, user) => {
@@ -93,7 +93,7 @@ cli.on('ready', async () => {
 			await cli.guilds.cache.get(cfg.fungalcavern.id).members.cache.get(user.id).roles.remove(cfg.fungalcavern.vetRaiderRole).catch(console.error);
 			return;
 		}
-	})
+	})*/
 
     // afkUpdater 5s interval
     setInterval(function() {
@@ -112,13 +112,13 @@ cli.on('ready', async () => {
 
     setInterval(function() {
         require('./helpers/modmailreactions.js')(cli, cfg);
-        require('./helpers/veripending.js')(cli, cfg);
-        require('./helpers/vetveripending.js')(cli, cfg);
+        /*require('./helpers/veripending.js')(cli, cfg);
+        require('./helpers/vetveripending.js')(cli, cfg);*/
 		updateSuspMuteTimers(cli, cfg);
     }, 60000);
 
     // current week parses
-    setInterval(async function() {
+    /*setInterval(async function() {
     	await cli.channels.cache.find(chan => chan.id == '732256566069428376').bulkDelete(5).catch(err => console.error(err));
     	await cli.channels.cache.find(chan => chan.id == '732256566069428376').send(`Updating..`).then((msg) => {
     		require('./commands/cmds/weeklyactivity.js')(cli, cfg, msg);
@@ -129,7 +129,7 @@ cli.on('ready', async () => {
     		require('./commands/cmds/weeklyruns.js')(cli, cfg, msg);
     		msg.delete();
     	});
-    }, 180000);
+    }, 180000);*/
 
     // on startup, add raiders with the role but not in db
     setInterval(async function() {
@@ -210,7 +210,7 @@ cli.on('message', async (data) => {
 		}
 
 		// verification
-		if (data.content.split(' ')[0].toLowerCase().includes('verify') && !doingVerifications.includes(data.author.id)) return data.channel.send(`Please re-react with ✅ in <#731327250032623696>, you probably tried to verify during a bot restart.`);
+		/*if (data.content.split(' ')[0].toLowerCase().includes('verify') && !doingVerifications.includes(data.author.id)) return data.channel.send(`Please re-react with ✅ in <#731327250032623696>, you probably tried to verify during a bot restart.`);
 		if (doingVerifications.includes(data.author.id) && data.content.split(' ')[0].toLowerCase() == 'verify'){
 			const veriMsg = await cli.channels.cache.find(chan => chan.id == cfg.fungalcavern.verichannel).messages.fetch('731327827579895842'); // veri msg
 			return require('./helpers/verification.js')(cli, cfg, data, veriMsgArray[data.author.id], veriMsg);
@@ -218,7 +218,7 @@ cli.on('message', async (data) => {
 
 		if (doingVerifications.includes(data.author.id) && data.content.length < 15){
 			return data.channel.send(`You sent ${data.content}, please send: \`verify ${data.content}\``);
-		}
+		}*/
 
 		// stats command
 		if (data.content.includes('stats') && data.content.length < 8){
