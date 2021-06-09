@@ -14,7 +14,7 @@ async function powerCalculation(cli, cfg, userid){
 		case 'suspended': case 'suspended but verified': case 'muted':
 			power = 0;
 			break;
-		case 'verified raider':  case 'event raider': case 'veteran raider': case 'friend': case 'dj': case 'temp key': case 'epic key popper': case 'legendary key popper': case 'godly key popper': case 'master miner': case 'nitro booster': case 'patreon': case 'trial raid leader': case 'staff on leave':
+		case 'verified raider':  case 'event raider': case 'veteran raider': case 'friend': case 'dj': case 'temp key': case 'epic key popper': case 'legendary key popper': case 'godly key popper': case 'nitro booster': case 'patreon': case 'trial raid leader': case 'staff on leave':
 			power = 1;
 			break;
 		case 'event master': case 'head event master':
@@ -39,17 +39,11 @@ async function powerCalculation(cli, cfg, userid){
 			power = 8;
 			break;
 		case 'developer': case 'admin': case 'pepemander': case '死神':
-			power = 9;
+			power = 9;	
 	}
 
 	return power;
 }
-
-function hrtimeToMS (hrtime) {
-  return hrtime[0] * 1000 + hrtime[1] / 1000000
-}
-
-let restartNeeded = false;
 
 const os = require('os');
 const NUMBER_OF_CPUS = os.cpus().length;
@@ -69,35 +63,17 @@ async function commands(cli, cfg, data){
 				break;
 			case 'restart':
 				if (await power > 8){
-					let veriCount = require('../main.js').doingVerifications.length;
 					let afkCount = require('../helpers/afkUpdater.js').afkArray.length;
 					let vetAfkCount = require('../helpers/vetAfkUpdater.js').vetAfkArray.length;
 					let eventAfkCount = require('../helpers/eventAfkUpdater.js').eventAfkArray.length;
 					
 					if (afkCount < 1 && vetAfkCount < 1 && eventAfkCount < 1){
 						// restart
-						await data.channel.send(`Restarting, please check my uptime in my status.`);
+						await data.channel.send(`Restarting.`);
 						process.exit();
 					} else {
 						await data.channel.send(`Cannot restart now, waiting for the ${afkCount} afks, ${vetAfkCount} vet afks and ${eventAfkCount} event afks to end.`)
-						restartNeeded = true;
 					}
-				}
-				break;
-			case 'getitem':
-				if (await power > 1){
-					let itemImage = await require('../realmeye.js').getItemImage(data.content.substr(args[0].length+1));
-					return data.channel.send(itemImage);
-				}
-				break;
-			case 'commend':
-				if (await power > 3){
-					return require('./cmds/commend.js')(cli, cfg, data);
-				}
-			case 'cl': case 'characterlist':
-				if (await power > 1){
-					const characterList = await require('../realmeye.js').getCharacterList(args[1]);
-					return data.channel.send(characterList.join('\n'));
 				}
 				break;
 			case 'ping':
@@ -186,16 +162,6 @@ async function commands(cli, cfg, data){
 					return require('./cmds/purge.js')(cli, cfg, data);
 				}
 				break;
-			case 'warn':
-				if (await power > 2){
-					return require('./cmds/warn.js')(cli, cfg, data);
-				}
-				break;
-			case 'warns':
-				if (await power > 2){
-					return require('./cmds/warns.js')(cli, cfg, data);
-				}
-				break;
 			case 'mute':
 				if (await power > 5){
 					return require('./cmds/mute.js')(cli, cfg, data);
@@ -226,11 +192,6 @@ async function commands(cli, cfg, data){
 					return require('./cmds/unsuspend.js')(cli, cfg, data);
 				}
 				break;
-			case 'changelogs': case 'cls':
-				if (await power > 6){
-					return require('./cmds/changelogs.js')(cli, cfg, data);
-				}
-				break;
 			case 'addalt':
 				if (await power > 5){
 					return require('./cmds/addalt.js')(cli, cfg, data);
@@ -241,29 +202,9 @@ async function commands(cli, cfg, data){
 					return require('./cmds/feedbackblacklist.js')(cli, cfg, data);
 				}
 				break;
-			case 'userstats': case 'us': case 'stats':
-				if (await power > 0 && data.channel.id != '697220168232992878' && data.channel.id != '697305936733274152' && data.channel.id != '697297355522703360'){ // not general, loot-n-oofs, neither raid-chat
-					return require('./cmds/userstats.js')(cli, cfg, data);
-				}
-				break;
 			case 'avatar':
 				if (await power > 0 && data.channel.id != '697220168232992878' && data.channel.id != '697305936733274152' && data.channel.id != '697297355522703360'){
 					return require('./cmds/avatar.js')(cli, cfg, data);
-				}
-				break;
-			case 'roat':
-				if (await power > 0 && data.channel.id != '697220168232992878' && data.channel.id != '697305936733274152' && data.channel.id != '697297355522703360'){
-					return require('./cmds/roat.js')(cli, cfg, data);
-				}
-				break;
-			case 'loat':
-				if (await power > 0 && data.channel.id != '697220168232992878' && data.channel.id != '697305936733274152' && data.channel.id != '697297355522703360'){
-					return require('./cmds/loat.js')(cli, cfg, data);
-				}
-				break;
-			case 'koat':
-				if (await power > 0 && data.channel.id != '697220168232992878' && data.channel.id != '697305936733274152' && data.channel.id != '697297355522703360'){
-					return require('./cmds/koat.js')(cli, cfg, data);
 				}
 				break;
 			case 'nonames':
@@ -281,11 +222,6 @@ async function commands(cli, cfg, data){
 					return require('./cmds/ban.js')(cli, cfg, data);
 				}
 				break;
-			case 'history': case 'h':
-				if (await power > 3){
-					return require('./cmds/history.js')(cli, cfg, data);
-				}
-				break;
 			case 'poll':
 				if (await power > 1){
 					return require('./cmds/poll.js')(cli, cfg, data);
@@ -296,38 +232,6 @@ async function commands(cli, cfg, data){
 					return require('./cmds/expelled.js')(cli, cfg, data);
 				}
 				break;
-			/*case 'resetweek':
-				if (await power > 7){
-					const confirmation = await data.channel.send(`Are you **sure** you want to reset this week's parses? This command is not undoable. Please react accordingly.`);
-					await confirmation.react(`✅`);
-					await confirmation.react(`❌`);
-
-					const confirmationCollector = confirmation.createReactionCollector((reaction, user) => {return !user.bot}, { time: 0, limit: 1 });
-					confirmationCollector.on('collect', async (reaction, user) => {
-						switch (reaction.emoji.name){
-							case '✅':
-								await cli.channels.cache.find(chan => chan.id == '732256594687164528').send(`@everyone This weeks final parses counts have been totaled below!`).then((msg) => {
-									require('./cmds/weeklyactivity.js')(cli, cfg, msg);
-								});
-								await cli.channels.cache.find(chan => chan.id == '746884655436791928').send(`@everyone This weeks final runs counts have been totaled below!`).then((msg) => {
-									require('./cmds/weeklyruns.js')(cli, cfg, msg);
-								});
-								await confirmation.delete();
-								await require('../db.js').resetParses();
-								await data.channel.send(`Succesfuly reset this current week's parses.`);
-								await require('../db.js').resetActivities();
-								await data.channel.send(`Succesfuly reset this current week's activity.`);
-								await require('../db.js').resetWeekRuns();
-								await data.channel.send(`Succesfuly reset this current week's runs.`);
-								break;
-							case '❌':
-								await confirmation.delete();
-								await data.channel.send(`Action was cancelled.`);
-								break;
-						}
-					})
-				}
-				break;*/
 	// raiding commands
 			case 'headcount': case 'hc':
 				if (await power > 4 && data.channel.id == cfg.fungalcavern.vetRlCommands){
@@ -340,16 +244,6 @@ async function commands(cli, cfg, data){
 					return require('./eventCmds/eventHeadcount.js')(cli, cfg, data);
 				}
 				break;
-			/*case 'log':
-				if (await power > 2 && (data.channel.id == cfg.fungalcavern.rlcommands || data.channel.id == cfg.fungalcavern.vetRlCommands || data.channel.id == cfg.fungalcavern.eventRlCommands)){
-					return require('./rlCmds/logRuns.js')(cli, cfg, data);
-				}
-				break;
-			case 'pop':
-				if (await power > 2 && (data.channel.id == cfg.fungalcavern.rlcommands || data.channel.id == cfg.fungalcavern.vetRlCommands || data.channel.id == cfg.fungalcavern.eventRlCommands)){
-					return require('./rlCmds/popKey.js')(cli, cfg, data);
-				}
-				break;*/
 			case 'clear': case 'clean':
 				if (await power > 4 && data.channel.id == cfg.fungalcavern.vetRlCommands){
 					return require('./vetrlCmds/vetClear.js')(cli, cfg, data);
@@ -399,10 +293,6 @@ async function commands(cli, cfg, data){
 					return require('./eventCmds/eventLocation.js')(cli, cfg, data);
 				}
 				break;
-			case 'parsemembers': case 'pm':
-				if (await power > 2 && (data.channel.id == cfg.fungalcavern.rlcommands || data.channel.id == cfg.fungalcavern.vetRlCommands)){
-					return require('./rlCmds/parsemembers.js')(cli, cfg, data);
-				}
 			case 'afk':
 				if (await power > 4 && data.channel.id == cfg.fungalcavern.vetRlCommands){
 					return require('./vetrlCmds/vetAfkcheck.js')(cli, cfg, data);
@@ -420,4 +310,3 @@ async function commands(cli, cfg, data){
 
 module.exports = commands;
 module.exports.powerCalculation = powerCalculation;
-module.exports.restartNeeded = restartNeeded;

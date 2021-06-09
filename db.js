@@ -15,6 +15,7 @@ function handleDisconnect() {
       setTimeout(handleDisconnect, 2000);
     }
     console.log(`Connected to Fungals db!`);
+    db.query(`CREATE TABLE users (id VARCHAR(255) NOT NULL, ign VARCHAR(255) NOT NULL, modmailblacklisted INT NOT NULL, muteLength INT NOT NULL, suspendLength INT NOT NULL)`);
   });
 
   db.on('error', function(err) {
@@ -45,7 +46,7 @@ async function insert_user(userid, ign){
 			})
 			return;
 		} else {
-			const sql = await db.query(`INSERT INTO users (id, ign, modmailblacklisted, muteLength, suspendLength, raiderRuns, eventRuns, fungalPop, eventPops, successRuns, failedRuns, assistedRuns, currentWeekParses, activityMeter, currentWeekRuns, currentWeekAssists) VALUES ('${userid}', '${ign}', false, '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0')`);
+			const sql = await db.query(`INSERT INTO users (id, ign, modmailblacklisted, muteLength, suspendLength) VALUES ('${userid}', '${ign}', false, '0', '0'`);
 			console.log(`Verified user into db, id:${userid}, ign: ${ign}.`);
 		}
 	})
@@ -132,25 +133,6 @@ async function findbyIGN(ign, callback){
 	})
 }
 
-async function pushWarn(userid, modid, reason){
-	reason = reason.replace(/[^\w\s]/gi, '');
-	await db.query(`INSERT INTO warns (id, modid, reason) VALUES ('${userid}', '${modid}', '${reason}')`);
-	console.log(`Warned user: ${userid} for reason: ${reason}.`);
-}
-
-async function showWarns(userid, callback){
-	db.query(`SELECT * FROM warns WHERE id = '${userid}'`, function(err, result){
-	if (err) { handleDisconnect(); throw err; }
-	if(result.length >= 1) return callback(result);
-	if(result.length == 0) return callback(undefined);
-	})
-}
-
-async function clearWarns(userid){
-	await db.query(`DELETE FROM warns WHERE id = '${userid}'`);
-	console.log(`Removed all warns from user ${userid}.`);
-}
-
 async function updateSuspMuteTimers(cli, cfg){
 	db.query(`SELECT * FROM users WHERE muteLength = 1`, function(err, result){
 		if (err) { handleDisconnect(); throw err; }
@@ -201,79 +183,9 @@ async function unmute(cli, cfg, userid){
 	console.log(`Unmuted id ${userid}.`);
 }
 
-async function logRun(userid, amount, type){
-	if (isNaN(amount)) amount = '1';
-
-	if (type == 'fail'){
-		// failed run
-		await db.query(`UPDATE users SET failedRuns = failedRuns+${amount} WHERE id = \'${userid}\'`);
-		console.log(`Logged ${amount} failed runs for id ${userid}`);
-	} else if (type == 'success'){
-		// succesful run
-		await db.query(`UPDATE users SET successRuns = successRuns+${amount} WHERE id = \'${userid}\'`);
-		await db.query(`UPDATE users SET currentWeekRuns = currentWeekRuns+${amount} WHERE id = \'${userid}\'`);
-		console.log(`Logged ${amount} succesful runs for id ${userid}`);
-	} else if (type == 'assist'){
-		await db.query(`UPDATE users SET assistedRuns = assistedRuns+${amount} WHERE id = \'${userid}\'`);
-		await db.query(`UPDATE users SET currentWeekAssists = currentWeekAssists+${amount} WHERE id = \'${userid}\'`);
-		console.log(`Logged ${amount} assisted runs for id ${userid}`);
-	}
-}
-
-async function popKey(userid, amount, type, callback){
-	if (type == 'fc'){
-		// fungal pops
-		await db.query(`UPDATE users SET fungalPop = fungalPop+${amount} WHERE id = \'${userid}\'`);
-		console.log(`Logged ${amount} key pops for id ${userid}`);
-		db.query(`SELECT * FROM users WHERE id = '${userid}'`, function(err, result){
-		if (err) { handleDisconnect(); throw err; }
-		if(result.length > 0) return callback(result[0]);
-		})
-	} else if (type == 'e'){
-		// event pops
-		await db.query(`UPDATE users SET eventPops = eventPops+${amount} WHERE id = \'${userid}\'`);
-		console.log(`Logged ${amount} key pops for id ${userid}`);
-		db.query(`SELECT * FROM users WHERE id = '${userid}'`, function(err, result){
-		if (err) { handleDisconnect(); throw err; }
-		if(result.length > 0) return callback(result[0]);
-		})
-	}
-}
-
-async function runDone(userid, type){
-	if (type == 'fc'){
-		// fungal runs
-		await db.query(`UPDATE users SET raiderRuns = raiderRuns+1 WHERE id = \'${userid}\'`);
-	} else if (type == 'e'){
-		// event runs
-		await db.query(`UPDATE users SET eventRuns = eventRuns+1 WHERE id = \'${userid}\'`);
-	}
-}
-
 async function addAlt(userid, ign){
 	await db.query(`UPDATE users SET ign = CONCAT(ign, ' | ${ign}') WHERE id = '${userid}'`);
 	console.log(`Added alt ${ign} for user ${userid}`);
-}
-
-async function roat(callback){
-	db.query(`SELECT * FROM users WHERE raiderRuns > 0 ORDER BY raiderRuns DESC`, function(err, result){
-		if (err) { handleDisconnect(); throw err; }
-		if(result.length > 1) return callback(result);
-	})
-}
-
-async function loat(callback){
-	db.query(`SELECT * FROM users WHERE successRuns > 0 ORDER BY successRuns DESC`, function(err, result){
-		if (err) { handleDisconnect(); throw err; }
-		if(result.length > 1) return callback(result);
-	})
-}
-
-async function koat(callback){
-	db.query(`SELECT * FROM users WHERE fungalPop > 0 ORDER BY fungalPop DESC`, function(err, result){
-		if (err) { handleDisconnect(); throw err; }
-		if(result.length > 1) return callback(result);
-	})
 }
 
 async function getModmailblacklistedUsers(callback){
@@ -290,7 +202,7 @@ async function insertmodmailblacklisted_user(userid, ign){
 			const sql = await db.query(`UPDATE users SET modmailblacklisted = true WHERE id ='${userid}'`);
 			console.log(`Updated user to modmailblacklisted, id:${userid}, ign: ${ign}.`);
 		} else {
-			const sql = await db.query(`INSERT INTO users (id, ign, modmailblacklisted, muteLength, suspendLength, raiderRuns, eventRuns, fungalPop, eventPops, successRuns, failedRuns, assistedRuns, currentWeekParses, activityMeter, currentWeekRuns, currentWeekAssists) VALUES ('${userid}', '${ign}', true, '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0')`);
+			const sql = await db.query(`INSERT INTO users (id, ign, modmailblacklisted, muteLength, suspendLength) VALUES ('${userid}', '${ign}', true, '0', '0')`);
 			console.log(`Modmail blacklisted user into db, id:${userid}, ign: ${ign}.`);
 		}
 	})
@@ -306,41 +218,6 @@ async function isModmailBlacklisted(userid, callback){
 		if (err) { handleDisconnect(); throw err; }
 		if(result.length == 1) return callback(true);
 		if(result.length == 0) return callback(false);
-	})
-}
-
-async function getActionLog(userid, callback){
-	db.query(`SELECT * FROM actionlog WHERE id = '${userid}'`, function(err, result){
-		if (err) { handleDisconnect(); throw err; }
-		if(result.length >= 1) return callback(result);
-		if(result.length == 0) return callback(undefined);
-	})
-}
-
-async function pushAction(userid, modid, action, reason, lengthA){
-	reason = reason.replace(/[^\w\s]/gi, '');
-	if (lengthA == undefined) lengthA = 'None';
-	if (reason.length <= 1) reason = 'None specified.';
-
-	await db.query(`INSERT INTO actionlog (id, modid, action, reason, length) VALUES ('${userid}', '${modid}', '${action}', '${reason}', '${lengthA}')`);
-	console.log(`Logged action: ${action} for id: ${userid} by ${modid} with reason: ${reason} and time: ${lengthA}.`);
-}
-
-async function addParse(userid){
-	await db.query(`UPDATE users SET currentWeekParses = currentWeekParses+1 WHERE id = \'${userid}\'`);
-	console.log(`Logged a parse for user id ${userid}`);
-}
-
-async function resetParses(){
-	await db.query(`UPDATE users SET currentWeekParses = '0' WHERE currentWeekParses > 0`);
-	console.log(`Reset this current week's parses.`);
-}
-
-async function getParseAmount(userid, callback){
-	db.query(`SELECT * FROM users WHERE id = \'${userid}\'`, function(err, result){
-		if (err) { handleDisconnect(); throw err; }
-		if(result.length == 1) return callback(result[0]);
-		if(result.length == 0) return callback(undefined);
 	})
 }
 
@@ -362,100 +239,12 @@ async function fixDuplicateNames(cli, cfg){
 	})
 }
 
-async function exportSuccesses(callback){
-	db.query(`SELECT * FROM users WHERE successRuns > 0`, function(err, result){
-		if (err) { handleDisconnect(); throw err; }
-		if(result.length > 0) return callback(result);
-		if(result.length == 0) return callback(undefined);
-	});
-}
-
-async function exportFails(callback){
-	db.query(`SELECT * FROM users WHERE failedRuns > 0`, function(err, result){
-		if (err) { handleDisconnect(); throw err; }
-		if(result.length > 0) return callback(result);
-		if(result.length == 0) return callback(undefined);
-	});
-}
-
-async function exportAssists(callback){
-	db.query(`SELECT * FROM users WHERE assistedRuns > 0`, function(err, result){
-		if (err) { handleDisconnect(); throw err; }
-		if(result.length > 0) return callback(result);
-		if(result.length == 0) return callback(undefined);
-	});
-}
-
-async function exportKeys(callback){
-	db.query(`SELECT * FROM users WHERE fungalPop > 0`, function(err, result){
-		if (err) { handleDisconnect(); throw err; }
-		if(result.length > 0) return callback(result);
-		if(result.length == 0) return callback(undefined);
-	});
-}
-
-async function resetLogs(){
-	await db.query(`UPDATE users SET assistedRuns = '0' WHERE assistedRuns > 0`);
-	await db.query(`UPDATE users SET failedRuns = '0' WHERE failedRuns > 0`);
-	await db.query(`UPDATE users SET successRuns = '0' WHERE successRuns > 0`);
-	await db.query(`UPDATE users SET fungalPop = '0' WHERE fungalPop > 0`);
-	console.log(`Logs were reset!`);
-}
-
-async function addActivity(userid, amount){
-	await db.query(`UPDATE users SET activityMeter = activityMeter+${amount} WHERE id = \'${userid}\'`);
-	console.log(`Logged ${amount} activity points for user id ${userid}`);
-}
-
-async function resetActivities(){
-	await db.query(`UPDATE users SET activityMeter = '0' WHERE activityMeter > 0`);
-	console.log(`Reset this current week's activity.`);
-}
-
-async function resetWeekRuns(){
-	await db.query(`UPDATE users SET currentWeekRuns = '0' WHERE currentWeekRuns > 0`);
-	await db.query(`UPDATE users SET currentWeekAssists = '0' WHERE currentWeekAssists > 0`);
-	console.log(`Reset this current week's runs.`);
-}
-
-async function getActivity(userid, callback){
-	db.query(`SELECT * FROM users WHERE id = \'${userid}\'`, function(err, result){
-		if (err) { handleDisconnect(); throw err; }
-		if(result.length == 1) return callback(result[0]);
-		if(result.length == 0) return callback(undefined);
-	})
-}
-
 async function dbPing(callback){
 	await db.query(`SELECT * FROM users WHERE id = \'202317297266851840\'`, function(err, result){
 		if(result.length == 1) return callback(result[0]);
 	})
 }
 
-async function expelUser(ign){
-	await db.query(`INSERT INTO expels (ign) VALUES ('${ign}')`);
-	console.log(`Expelled user ${ign}`);
-}
-
-async function unexpelUser(ign){
-	await db.query(`DELETE FROM expels WHERE ign = \'${ign}\'`);
-	console.log(`Unexpelled user ${ign}`);
-}
-
-async function isExpelled(ign, callback){
-	db.query(`SELECT * FROM expels WHERE REGEXP_REPLACE(ign, '[^a-zA-Z ]', '') LIKE '%${ign}%'`, function(err, result){
-		if (err) { handleDisconnect(); throw err; }
-		if(result.length > 0) return callback(true);
-		if(result.length == 0) return callback(false);
-	});
-}
-
-async function getExpelledList(callback){
-	db.query(`SELECT * FROM expels ORDER BY ign`, function(err, result){
-	if (err) { handleDisconnect(); throw err; }
-	return callback(result);
-	});
-}
 
 async function getUsersDb(callback){
 	db.query(`SELECT * FROM users`, function(err, result){
@@ -473,44 +262,21 @@ module.exports = {
 	fixDbName,
 	findbyIGN,
 	findbyID,
-	pushWarn,
-	showWarns,
-	clearWarns,
 	updateSuspMuteTimers,
 	suspend,
 	mute,
 	unsuspend,
 	unmute,
-	logRun,
-	popKey,
 	addAlt,
-	runDone,
-	roat,
-	loat,
-	koat,
 	getModmailblacklistedUsers,
 	insertmodmailblacklisted_user,
 	unmodmailblacklist,
 	isModmailBlacklisted,
-	getActionLog,
-	pushAction,
-	addParse,
-	resetParses,
-	getParseAmount,
 	fixDuplicateNames,
-	exportSuccesses,
-	exportFails,
-	exportAssists,
-	resetLogs,
-	exportKeys,
-	addActivity,
-	resetActivities,
-	getActivity,
 	dbPing,
 	expelUser,
 	unexpelUser,
 	isExpelled,
 	getExpelledList,
 	getUsersDb,
-	resetWeekRuns
 }
