@@ -1,29 +1,10 @@
 const Discord = require('discord.js');
 const cli = new Discord.Client({ fetchAllMembers: true, sync: true });
 const cfg = require('./config.js');
-const { isModmailBlacklisted, updateSuspMuteTimers, findbyID, insert_user, pushAction, fixDuplicateNames, getUsersDb, isExpelled, remove_user} = require('./db.js');
+const { isModmailBlacklisted, updateSuspMuteTimers, findbyID, insert_user, pushAction, fixDuplicateNames, getUsersDb, remove_user} = require('./db.js');
 
 const openModmails = [];
 const latestVC = [];
-
-/*const veriEmbed = {
-	"title": `Verification`,
-	"description": `\nSteps to Verify:\n1. Make sure the bot can DM you.\n2. Set everything in realmeye public except your last known location.\n3. Simply react with the ✅ below.\n4. Follow the instructions the bot sends.\n\nIf you have any problems with verification, direct message me, the bot.`,
-	"color": 2900657
-};
-
-const vetVeriEmbed = {
-	"title": `Veteran Verification`,
-	"description": `\nReact with ✅ to apply for the role and react with ❌ to remove it.\n\nWith the role, you get access to our veteran raiding section.\nMake sure you have your graveyard and character list public before applying.\n\n**__Requirements:__**\n-50x Completed runs\n-2x 8/8 Characters\n-1x 8/8 Melee Character`,
-	"color": 2900657
-};
-
-
-const dmVeriEmbed = {
-	"title": `Your verification status!`,
-	"description": `\nTo start verification on Fungal Cavern\nYou must send me **within this format:** \`verify YourUserName\`.`,
-	"color": 2900657
-}*/
 
 const modmailPost = {
 	"title": `Mod Mail for Fungal and Crystal Cavern!`,
@@ -31,64 +12,11 @@ const modmailPost = {
 	"color": 2900657
 }
 
-/*const eventVeriPost = {
-	"color": 2900657,
-	"description": `React with ✅ to give yourself the role and ❌ to remove it.`,
-	"title": `Event verification for Fungal and Crystal Cavern!`
-}*/
-
-let timerSeconds = 0;
-let timerMinutes = 0;
-let timerHours = 0;
-let timerDays = 0;
-
 cli.on('ready', async () => {
 	console.log('Lilith is running on Fungals!');
 
 	// EMBEDS
-	//cli.channels.cache.get('731327250032623696').send({ embed: veriEmbed }).then((msg) => {msg.react('✅'); });
-	//cli.channels.cache.get('660888433694212096').send({ embed: eventVeriPost }).then((msg) => { msg.react('✅'); msg.react('❌'); });
-	//cli.channels.cache.get('656915788980158484').send({ embed: vetVeriEmbed }).then((msg) => { msg.react('✅'); msg.react('❌'); });
 	//cli.channels.cache.get('635531240434565160').send({ embed: modmailPost });
-
-	/*const veriMsg = await cli.channels.cache.find(chan => chan.id == cfg.fungalcavern.verichannel).messages.fetch('731327827579895842'); // veri msg
-
-	const veriCollector = veriMsg.createReactionCollector((reaction, user) => {return !user.bot}, { time: 0 });
-	veriCollector.on('collect', async (reaction, user) => {
-		if (reaction.emoji.name == '✅' && !doingVerifications.includes(user.id)){
-			const dmVeriMsg = await user.send({ embed: dmVeriEmbed }).catch(async () => {
-				const errorMsgDM = await veriMsg.channel.send(`${user}, I couldn't start verification because your dms are set to private.`);
-				setTimeout(() => {
-					errorMsgDM.delete();
-				}, 300000)
-			});
-			doingVerifications.push(user.id);
-			veriMsgArray[user.id] = dmVeriMsg;
-		}
-	})
-
-	const eventVeriMsg = await cli.channels.cache.find(chan => chan.id == '660888433694212096').messages.fetch('746732373483192400'); // event veri msg
-
-	const eventVeriCollector = eventVeriMsg.createReactionCollector((reaction, user) => {return !user.bot}, { time: 0 });
-	eventVeriCollector.on('collect', async (reaction, user) => {
-		if (reaction.emoji.name == '✅'){
-			await cli.guilds.cache.get(cfg.fungalcavern.id).members.cache.get(user.id).roles.add(cfg.fungalcavern.eventRaiderRole).catch(console.error);
-		} else if (reaction.emoji.name == '❌'){
-			await cli.guilds.cache.get(cfg.fungalcavern.id).members.cache.get(user.id).roles.remove(cfg.fungalcavern.eventRaiderRole).catch(console.error);
-		}
-	})
-
-	const vetVeriMsg = await cli.channels.cache.find(chan => chan.id == '656915788980158484').messages.fetch('746788440691048639'); // vet veri msg
-	
-	const vetVeriCollector = vetVeriMsg.createReactionCollector((reaction, user) => {return !user.bot}, { time: 0 });
-	vetVeriCollector.on('collect', async (reaction, user) => {
-		if (reaction.emoji.name == '✅'){
-			return require('./helpers/vetverification.js')(cli, cfg, user);
-		} else if (reaction.emoji.name == '❌'){
-			await cli.guilds.cache.get(cfg.fungalcavern.id).members.cache.get(user.id).roles.remove(cfg.fungalcavern.vetRaiderRole).catch(console.error);
-			return;
-		}
-	})*/
 
     // afkUpdater 5s interval
     setInterval(function() {
@@ -99,24 +27,8 @@ cli.on('ready', async () => {
 
     setInterval(function() {
         require('./helpers/modmailreactions.js')(cli, cfg);
-        /*require('./helpers/veripending.js')(cli, cfg);
-        require('./helpers/vetveripending.js')(cli, cfg);*/
 		updateSuspMuteTimers(cli, cfg);
     }, 60000);
-
-    // current week parses
-    /*setInterval(async function() {
-    	await cli.channels.cache.find(chan => chan.id == '732256566069428376').bulkDelete(5).catch(err => console.error(err));
-    	await cli.channels.cache.find(chan => chan.id == '732256566069428376').send(`Updating..`).then((msg) => {
-    		require('./commands/cmds/weeklyactivity.js')(cli, cfg, msg);
-    		msg.delete();
-    	});
-    	await cli.channels.cache.find(chan => chan.id == '746390981993300049').bulkDelete(5).catch(err => console.error(err));
-    	await cli.channels.cache.find(chan => chan.id == '746390981993300049').send(`Updating..`).then((msg) => {
-    		require('./commands/cmds/weeklyruns.js')(cli, cfg, msg);
-    		msg.delete();
-    	});
-    }, 180000);*/
 
     // on startup, add raiders with the role but not in db
     setInterval(async function() {
@@ -126,11 +38,7 @@ cli.on('ready', async () => {
     		dbResultt.forEach(async userInDb => {
     			if (userInDb.id != undefined) {
 	    			if (cli.guilds.cache.get(cfg.fungalcavern.id).members.cache.find(mmbr => mmbr.id == userInDb.id) == undefined && !userInDb.modmailblacklisted){
-	    				await isExpelled(userInDb.ign, async result => {
-	    					if (!result){
-	    						await remove_user(userInDb.id);
-	    					}
-	    				})
+	    				await remove_user(userInDb.id);
 	    			}
 	    		}
     		})
@@ -160,25 +68,6 @@ cli.on('ready', async () => {
 // Main handle
 cli.on('message', async (data) => {
 
-	// Parses logging
-	/*if ((data.content.split(' ')[0].toLowerCase() == `-checkvc` || data.content.split(' ')[0].toLowerCase() == `*pm` || data.content.split(' ')[0].toLowerCase() == `*parsemembers` || data.content.split(' ')[0].toLowerCase() == `-parsemembers` || data.content.split(' ')[0].toLowerCase() == `-pm`) && !parsedRecently.has(data.author.id)){
-		await addParse(data.author.id);
-		await addActivity(data.author.id, 6);
-		await parsedRecently.add(data.author.id);
-		setTimeout(() => {
-			parsedRecently.delete(data.author.id);
-        }, 10000);
-	}
-
-	// Mod log message
-	if (data.channel.id == '635532200842100818' && !talkedRecentlyInModlogs.has(data.author.id) && !data.author.bot){
-		await addActivity(data.author.id, 1);
-		await talkedRecentlyInModlogs.add(data.author.id);
-		setTimeout(() => {
-			talkedRecentlyInModlogs.delete(data.author.id);
-        }, 30000);
-	}*/
-
 	// regular
 	if (data.author.bot) return;
 
@@ -206,8 +95,6 @@ cli.on('message', async (data) => {
 	
 	// commands (wip: separate user and rl commands before handling them)
 	if (data.channel.type != 'dm' && data.guild.id == cfg.fungalcavern.id){
-		// check if bot is alive slurp : rl side
-		// rl chans -> raiding commands, everything else: everywhere, then separate with roles needed for a command
 		return require('./commands/commands.js')(cli, cfg, data);
 	}
 })
