@@ -1,6 +1,4 @@
  const eventAfkArray = [];
-const dbrunDone = require('../db.js').runDone;
-const dbpopKey = require('../db.js').popKey;
 const powerCalculation = require('../commands/commands.js').powerCalculation;
 
 async function eventAfkUpdater(cli, cfg){
@@ -79,14 +77,13 @@ async function eventAfkUpdater(cli, cfg){
 
 				// auto logging runs done + key
 				var reactIDS = await afkMsg.reactions.cache.get(portalReact).users.fetch();
-				for (var i of reactIDS){ dbrunDone(i[0], 'e') }
-				if (afk['key']) await dbpopKey(afk['key'].id, '1', 'e', function(result){}).catch(err => console.error(err));
+				if (afk['key']) await cpMsg.channel.send(`<@${afk['key'].id}> has popped a key, make sure to log it!`)
 
 				let index = eventAfkArray.indexOf(afk);
 				if (index > -1) {
   					eventAfkArray.splice(index, 1);
 				}
-				console.log(`removed afk from array because of end`);
+				console.log(`removed afk from array because: Ended`);
 			}
 		} else {
 			// aborted embed then remove from afk array
@@ -105,7 +102,7 @@ async function eventAfkUpdater(cli, cfg){
   				eventAfkArray.splice(index, 1);
 			}
 			if (afkMsg.reactions.cache.get('760024527971024927') != undefined) await afkMsg.reactions.cache.get('760024527971024927').remove().catch(error => console.error('Failed to remove reactions: ', error));
-			console.log(`removed afk from array because of abort`);
+			console.log(`removed afk from array because: Aborted`);
 		}
 	})
 }
