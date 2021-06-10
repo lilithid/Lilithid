@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 const dbinsert_user = require('../../db.js').insert_user;
-const { addActivity } = require('../../db.js');
+const {  } = require('../../db.js');
 
 async function manualVerify(cli, cfg, data){
 	const args = data.content.split(' ');
@@ -67,7 +67,7 @@ async function continueVerify(cli, cfg, data, args, user){
 	await cli.guilds.cache.get(cfg.fungalcavern.id).members.cache.get(user).roles.add(cli.guilds.cache.get(cfg.fungalcavern.id).roles.cache.find(r => r.name === "Verified Raider").id).catch(console.error);
 	await cli.guilds.cache.get(cfg.fungalcavern.id).members.cache.get(user).setNickname(args[2], "Reason: Verification process.").catch(err => console.error(err));
 	await dbinsert_user(user, args[2]);
-	await addActivity(data.author.id, 2);
+	
 	await cli.users.cache.get(user).send(`You have succesfuly been verified!`);
 	await data.channel.send(`User was succesfuly verified!`);
 }

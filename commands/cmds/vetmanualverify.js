@@ -1,5 +1,5 @@
 const fetch = require('node-fetch');
-const { addActivity, findbyIGN } = require('../../db.js');
+const { , findbyIGN } = require('../../db.js');
 
 async function vetVerify(cli, cfg, data){
 	const args = data.content.split(' ');
@@ -64,7 +64,7 @@ async function continueVetVerify(cli, cfg, data, args, user){
 
 	// add role & change name
 	await cli.guilds.cache.get(cfg.fungalcavern.id).members.cache.get(user).roles.add(cli.guilds.cache.get(cfg.fungalcavern.id).roles.cache.find(r => r.name === "Veteran Raider").id).catch(console.error);
-	await addActivity(data.author.id, 2);
+	
 	await cli.users.cache.get(user).send(`You have been added the veteran role!`);
 	await data.channel.send(`User was succesfuly added veteran role!`);
 }

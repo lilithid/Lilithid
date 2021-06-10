@@ -1,5 +1,5 @@
 const fetch = require('node-fetch');
-const { addActivity, findbyIGN } = require('../../db.js');
+const { , findbyIGN } = require('../../db.js');
 
 async function vetUnverify(cli, cfg, data){
 	const args = data.content.split(' ');
@@ -64,7 +64,7 @@ async function continueVetUnverify(cli, cfg, data, args, user){
 
 	// add role & change name
 	await cli.guilds.cache.get(cfg.fungalcavern.id).members.cache.get(user).roles.remove(cli.guilds.cache.get(cfg.fungalcavern.id).roles.cache.find(r => r.name === "Veteran Raider").id).catch(console.error);
-	await addActivity(data.author.id, 2);
+	
 	await data.channel.send(`User was succesfuly removed from veteran role!`);
 }
 

@@ -1,4 +1,4 @@
-const { addAlt, findbyIGN, addActivity } = require('../../db.js');
+const { addAlt, findbyIGN } = require('../../db.js');
 const fetch = require('node-fetch');
 
 async function addAltFunction(cli, cfg, data){
@@ -62,7 +62,7 @@ async function continueAddAlt(cli, cfg, data, args, user){
 	await addAlt(user, args[2]);
 	await data.channel.send(`Succesfuly added the alt account.`);
 	await cli.guilds.cache.get(cfg.fungalcavern.id).members.cache.get(user).setNickname(`${cli.guilds.cache.get(cfg.fungalcavern.id).members.cache.get(user).displayName} | ${args[2]}`);
-	await addActivity(data.author.id, 2);
+	
 }
 
 module.exports = addAltFunction;

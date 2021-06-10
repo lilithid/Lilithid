@@ -1,4 +1,4 @@
-const { fixDbName, isInDBID, findbyIGN, addActivity } = require('../../db.js');
+const { fixDbName, isInDBID, findbyIGN,  } = require('../../db.js');
 
 async function fixname(cli, cfg, data){
 	const args = data.content.split(' ');
@@ -59,7 +59,7 @@ async function fixname(cli, cfg, data){
 					await fixDbName(user, args[2]);
 					await cli.guilds.cache.get(cfg.fungalcavern.id).members.cache.get(user).setNickname(args[2], `Reason: Fixname command issued.`).catch(err => console.error(err));
 					await data.channel.send(`User was succesfuly renamed to ${args[2]}.`);
-					await addActivity(data.author.id, 1);
+					
 				} else {
 					return data.channel.send(`User is not verified and therefore cannot be name changed.`);
 				}
