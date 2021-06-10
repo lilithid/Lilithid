@@ -15,7 +15,7 @@ function handleDisconnect() {
       setTimeout(handleDisconnect, 2000);
     }
     console.log(`Connected to Fungals db!`);
-    db.query(`CREATE TABLE users (id VARCHAR(255) NOT NULL, ign VARCHAR(255) NOT NULL, modmailblacklisted INT NOT NULL, muteLength INT NOT NULL, suspendLength INT NOT NULL)`);
+    //db.query(`CREATE TABLE users (id VARCHAR(255) NOT NULL, ign VARCHAR(255) NOT NULL, modmailblacklisted INT NOT NULL, muteLength INT NOT NULL, suspendLength INT NOT NULL)`);
   });
 
   db.on('error', function(err) {
