@@ -1,6 +1,5 @@
 const openModmails = require('../main.js').openModmails;
 const insertmodmailblacklisted_user = require('../db.js').insertmodmailblacklisted_user;
-const { addActivity } = require('../db.js');
 
 async function modmailReactions(cli, cfg){
 	cli.channels.cache.find(chan => chan.id == cfg.fungalcavern.modmail).messages.fetch({ limit: 100 })
@@ -48,7 +47,6 @@ async function modmailReactions(cli, cfg){
 										let newEmbed = msg.embeds[0];
 										newEmbed.addField(`Response by ${cli.guilds.cache.get(cfg.fungalcavern.id).members.cache.get(msgtosend.author.id).displayName}:`, `${msgtosend.content}`);
 										msg.edit({ embed: newEmbed });
-										await addActivity(user.id, 0.5);
 										await msg.react('📫');
 										return;
 									} else if (responseConfirmation.content.toLowerCase() == 'no' || responseConfirmation.content.toLowerCase() == 'n'){
@@ -79,24 +77,20 @@ async function modmailReactions(cli, cfg){
 							// Send the user that the message has been seen
 							await msg.reactions.removeAll().catch(error => console.error('Failed to clear reactions: ', error));
 							await msg.react('👀');
-							await addActivity(user.id, 0.5);
 							cli.users.cache.get(AuthorUserId).send(`Your message has been received and read by the staff.`).catch(err => console.error(err));
 							break;
 						case '🗑️':
 							// Ignore the message
 							await msg.reactions.removeAll().catch(error => console.error('Failed to clear reactions: ', error));
-							await addActivity(user.id, 0.5);
 							await msg.react('🗑️');
 							break;
 						case '❌':
 							// Delete the msg
 							await msg.delete();
-							await addActivity(user.id, 0.5);
 							break;
 						case '🔨':
 							await msg.reactions.removeAll().catch(error => console.error('Failed to clear reactions: ', error));
 							await msg.react('🔨');
-							await addActivity(user.id, 0.5);
 							cli.users.cache.get(AuthorUserId).send(`You have been blacklisted from sending modmails by the Fungal Cavern staff.`).catch(err => console.error(err));
 							insertmodmailblacklisted_user(AuthorUserId, null);
 							break;
