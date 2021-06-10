@@ -24,7 +24,8 @@ async function nonames(cli, cfg, data, log){
 			}
 		})
 	})
-	if (log) return data.channel.send(`Fixed all people without a nickname, they were:\n${noNameInDB.join(', ')}`);
+	if (log && noNameInDB.length > 0) return data.channel.send(`Fixed all people without a nickname, they were:\n${noNameInDB.join(', ')}`);
+	if (log && noNameInDB.length == 0) return data.channel.send(`No one was found without a nickname.`);
 }
 
 module.exports = nonames;
