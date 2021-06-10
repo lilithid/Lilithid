@@ -80,10 +80,10 @@ async function commands(cli, cfg, data){
 					return data.channel.send(itemImage);
 				}
 				break;
-			case 'cl': case 'characterlist':
+			case 'getuser':
 				if (await power > 1){
-					const characterList = await require('../realmeye.js').getCharacterList(args[1]);
-					return data.channel.send(characterList.join('\n'));
+					const UserRE = await require('../realmeye.js').getUser(args[1]);
+					return data.channel.send(JSON.stringify(UserRE));
 				}
 				break;
 			case 'restart':

@@ -129,8 +129,9 @@ async function getItemImage(itemName){
     	return `https://www.realmeye.com${fixedUrl}`;
     }
 
-    if (apiBody.includes('Missing wiki page')) return `unknown`;
+    if (apiBody.includes('Missing wiki page')) return `unknown item`;
 	let fixedUrl = apiBody.split('<img alt="')[1].split('class="img-responsive">')[0].split('//')[1].split('"')[0];
+	if (!fixedUrl.startsWith('https://')) fixedUrl = `https://${fixedUrl}`;
 	return fixedUrl;
 }
 
