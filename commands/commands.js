@@ -74,6 +74,18 @@ async function commands(cli, cfg, data){
 					})
 				}
 				break;
+			case 'getitem':
+				if (await power > 1){
+					let itemImage = await require('../realmeye.js').getItemImage(data.content.substr(args[0].length+1));
+					return data.channel.send(itemImage);
+				}
+				break;
+			case 'cl': case 'characterlist':
+				if (await power > 1){
+					const characterList = await require('../realmeye.js').getCharacterList(args[1]);
+					return data.channel.send(characterList.join('\n'));
+				}
+				break;
 			case 'restart':
 				if (await power > 8){
 					let afkCount = require('../helpers/afkUpdater.js').afkArray.length;

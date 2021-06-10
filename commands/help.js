@@ -9,9 +9,9 @@ async function help(cli, cfg, data){
 		{
 			"name": "**__Raiding:__**", "value": "```fix\nafk; hc; location; clear; yoink; lock; unlock; poll```"
 		}, {
-			"name": "**__Moderation:__**", "value": "```fix\nfind; nonames; purge; feedbackblacklist; history; fixname; ban; kick; mute; pmute; unmute; suspend; psuspend; unsuspend; vetmanualverify; manualverify; vetunverify; unverify; addalt```"
+			"name": "**__Moderation:__**", "value": "```fix\nfind; nonames; purge; feedbackblacklist; fixname; ban; kick; mute; pmute; unmute; suspend; psuspend; unsuspend; vetmanualverify; manualverify; vetunverify; unverify; addalt```"
 		}, {
-			"name": "**__Server Management:__**", "value": "```fix\nping; restart```"
+			"name": "**__Server Management:__**", "value": "```fix\nping; dbamount; restart```"
 		}, {
 			"name": "**__Raiders Commands:__**", "value": "```fix\njoin; avatar```\nTo learn more about a command, use the command -cmds <command name>"
 		} ]
