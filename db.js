@@ -230,13 +230,6 @@ async function fixDuplicateNames(cli, cfg){
 			remove_user_ign(raider.ign);
 		});
 	})
-
-	db.query(`SELECT ign FROM expels GROUP BY ign HAVING COUNT(ign) > 1;`, function(err, result){
-		if (err) { handleDisconnect(); throw err; }
-		result.forEach(function(raider){
-			db.query(`DELETE FROM expels WHERE ign = '${raider.ign}'`);
-		});
-	})
 }
 
 async function dbPing(callback){
@@ -274,9 +267,5 @@ module.exports = {
 	isModmailBlacklisted,
 	fixDuplicateNames,
 	dbPing,
-	expelUser,
-	unexpelUser,
-	isExpelled,
-	getExpelledList,
 	getUsersDb,
 }
