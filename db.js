@@ -46,7 +46,7 @@ async function insert_user(userid, ign){
 			})
 			return;
 		} else {
-			const sql = await db.query(`INSERT INTO users (id, ign, modmailblacklisted, muteLength, suspendLength) VALUES ('${userid}', '${ign}', false, '0', '0'`);
+			const sql = await db.query(`INSERT INTO users (id, ign, modmailblacklisted, muteLength, suspendLength) VALUES ('${userid}', '${ign}', false, '0', '0')`);
 			console.log(`Verified user into db, id:${userid}, ign: ${ign}.`);
 		}
 	})
@@ -233,7 +233,7 @@ async function fixDuplicateNames(cli, cfg){
 }
 
 async function dbPing(callback){
-	await db.query(`SELECT * FROM users WHERE id = \'202317297266851840\'`, function(err, result){
+	await db.query(`SELECT * FROM users WHERE id = \'553928499065520128\'`, function(err, result){
 		if(result.length == 1) return callback(result[0]);
 	})
 }

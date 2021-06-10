@@ -114,7 +114,7 @@ cli.on('voiceStateUpdate', async (oldState, newState) => {
 
 	if (newState.channelID == '749246449987878952'){
 		if (latestVC[newState.id] != undefined){
-			if (cli.channels.cache.get(latestVC[newState.id]).members.size >= cli.channels.cache.get(latestVC[newState.author.id]).userLimit) return newState.member.user.send(`Sorry but the channel ${cli.channels.cache.get(latestVC[newState.id]).name} is full!`);
+			if (cli.channels.cache.get(latestVC[newState.id]).members.size >= cli.channels.cache.get(latestVC[newState.id]).userLimit) return newState.member.user.send(`Sorry but the channel ${cli.channels.cache.get(latestVC[newState.id]).name} is full!`);
 			await cli.guilds.cache.get(cfg.fungalcavern.id).members.cache.get(newState.id).voice.setChannel(latestVC[newState.id]).catch(err => console.error(err));
 		}
 	}

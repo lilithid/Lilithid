@@ -1,4 +1,4 @@
-const { findbyID, findbyIGN, isExpelled } = require('../../db.js');
+const { findbyID, findbyIGN } = require('../../db.js');
 
 async function find(cli, cfg, data){
 	const args = data.content.split(' ');
@@ -19,25 +19,22 @@ async function find(cli, cfg, data){
 					} 
 					});
 				} else {
-					await isExpelled(raider, async resultExpelled => {
-						// server member i found
-						if (result.suspendLength > 0){ isSuspended = '✅'; } else { isSuspended = '❌'; };
-						if (resultExpelled){ isExpelledBoolean = '✅'; } else { isExpelledBoolean = '❌'; };
-						try {
-							if (cli.guilds.cache.get(cfg.fungalcavern.id).members.cache.get(result.id) == undefined) return data.channel.send({ embed: { "description": `This user left the server: [${result.ign.split('|')[0].trim()}](http://www.realmeye.com/player/${result.ign.split('|')[0].trim()}): <@${result.id}>.\nExpelled: ${isExpelledBoolean} \| Suspended: ${isSuspended}`, "color": '#ccccff', "timestamp": new Date(data.createdTimestamp).toISOString() }  });
-							if (cli.guilds.cache.get(cfg.fungalcavern.id).members.cache.get(result.id).voice.channel != undefined){ isInVoiceChannel = `#${cli.guilds.cache.get(cfg.fungalcavern.id).members.cache.get(result.id).voice.channel.name}`; } else { isInVoiceChannel = '❌'; };
-						} catch(err){ console.error(err)}
-						data.channel.send({ embed: 
-							{
-								"description": `Server member I found with the nickname [${result.ign.split('|')[0].trim()}](http://www.realmeye.com/player/${result.ign.split('|')[0].trim()}): <@${result.id}>.\nExpelled: ${isExpelledBoolean} \| Suspended: ${isSuspended} \| Voice Channel: ${isInVoiceChannel}`,
-								"color": '#06c783',
-								"timestamp": new Date(data.createdTimestamp).toISOString(),
-								"footer": {
-									"text":`ID: ${result.id}`,
-								}
-							} 
-						});
-					})
+					// server member i found
+					if (result.suspendLength > 0){ isSuspended = '✅'; } else { isSuspended = '❌'; };
+					try {
+						if (cli.guilds.cache.get(cfg.fungalcavern.id).members.cache.get(result.id) == undefined) return data.channel.send({ embed: { "description": `This user left the server: [${result.ign.split('|')[0].trim()}](http://www.realmeye.com/player/${result.ign.split('|')[0].trim()}): <@${result.id}>.\nExpelled: ${isExpelledBoolean} \| Suspended: ${isSuspended}`, "color": '#ccccff', "timestamp": new Date(data.createdTimestamp).toISOString() }  });
+						if (cli.guilds.cache.get(cfg.fungalcavern.id).members.cache.get(result.id).voice.channel != undefined){ isInVoiceChannel = `#${cli.guilds.cache.get(cfg.fungalcavern.id).members.cache.get(result.id).voice.channel.name}`; } else { isInVoiceChannel = '❌'; };
+					} catch(err){ console.error(err)}
+					data.channel.send({ embed: 
+						{
+							"description": `Server member I found with the nickname [${result.ign.split('|')[0].trim()}](http://www.realmeye.com/player/${result.ign.split('|')[0].trim()}): <@${result.id}>.\nSuspended: ${isSuspended} \| Voice Channel: ${isInVoiceChannel}`,
+							"color": '#06c783',
+							"timestamp": new Date(data.createdTimestamp).toISOString(),
+							"footer": {
+								"text":`ID: ${result.id}`,
+							}
+						} 
+					});
 				}
 		})
 	})

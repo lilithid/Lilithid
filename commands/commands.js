@@ -1,3 +1,5 @@
+const { getUsersDb } = require('../db.js');
+
 async function isCmd(cli, cfg, data){
 	if (data.content.charAt(0) == '*'){
 		return true;
@@ -50,6 +52,10 @@ const NUMBER_OF_CPUS = os.cpus().length;
 let startTime  = process.hrtime()
 let startUsage = process.cpuUsage()
 
+function hrtimeToMS (hrtime) {
+  return hrtime[0] * 1000 + hrtime[1] / 1000000
+}
+
 async function commands(cli, cfg, data){
 	// verify roles
 	const power = powerCalculation(cli, cfg, data.author.id);
@@ -59,6 +65,13 @@ async function commands(cli, cfg, data){
 			case 'help': case 'commands': case 'cmds':
 				if (await power > 0 && data.channel.id != '635413437647683600' && data.channel.id != '635417481183494164' && data.channel.id != '635537374029283329' && data.channel.id != '635417903034007586' && data.channel.id != '635532511740690474' && data.channel.id != '662287467394629672'){ // not general, loot-n-oofs, neither raid-chat
 					return require('./help.js')(cli, cfg, data);
+				}
+				break;
+			case 'dbamount':
+				if (await power > 8){
+					await getUsersDb(async (users) => {
+						await data.channel.send(`I have ${users.length} users logged into the users table.`);
+					})
 				}
 				break;
 			case 'restart':
